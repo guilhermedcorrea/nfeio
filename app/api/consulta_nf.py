@@ -12,7 +12,7 @@ from sqlalchemy import text
 from datetime import datetime
 from itertools import chain
 from ..controllers.controllers_hausz_mapa import executa_select
-
+from itertools import groupby
 
 
 def register_handlers(app):
@@ -48,9 +48,9 @@ from ..controllers.controllers_notas import get_metodo, list_all_empresas
 
 """
 NOTA FISCAL CONSUMIDOR
-
 """
 load_dotenv()
+
 
 
 API_KEY_EMISSAO = os.getenv('API_KEY_EMISSAO')
@@ -71,7 +71,6 @@ def get_list_empresas(*args: tuple, **kwargs: Dict[str, Any]) -> None:
 """
 Lista notas
 https://nfe.io/docs/desenvolvedores/rest-api/nota-fiscal-de-consumidor-v2/#/
-
 """
 
 @consulta_bp.route('/api/v2/companies/list/empresas/all', methods=['GET','POST'])
@@ -90,6 +89,9 @@ def consulta_nf():
     except:
         abort(400)
   
+def group_keys(key):
+    return key['CodigoPedido']
+
 #teste funcao
 @consulta_bp.route("/api/v1/teste", methods=['GET','POST'])
 def retorna_teste():
@@ -106,7 +108,13 @@ def retorna_teste():
         for pedidos in query_dicts:
       
             jsons = executa_select(pedido = pedidos.get('CodigoPedido'))
-            dict_items = next(chain.from_iterable(jsons))
+            dict_items = next(chain(jsons))
+            dict_items = sorted(dict_items, key=group_keys)
+ 
+            for key, value in groupby(dict_items, group_keys):
+                print(key)
+                print(list(value))
+            '''
             dict_items.update(pedidos)
             dict_pedidos = {}
             dict_pedidos['CodigoPedido'] = dict_items.get('CodigoPedido')
@@ -161,12 +169,16 @@ def retorna_teste():
             dict_pedidos['Complemento'] =  dict_items.get('Complemento')
             dict_pedidos['Observacao'] =  dict_items.get('Observacao')
             dict_pedidos['bitShowRoom'] =  dict_items.get('bitShowRoom')
-            
+            '''
           
 
             return jsonify({dict_items.get('CodigoPedido'):dict_items})
             
          
+
+       
+   
+
 
 '''
 @consulta_bp.route('/api/v1/companies/consumerinvoices/<consumer_invoice_id>', methods=['GET','POST'])
@@ -175,30 +187,22 @@ def consultar_nf_id(consumer_invoice_id: str) -> Response:
     values = consumer_invoice_id['consumer_invoice_id']
     print(values)
     return jsonify({"Notas":values})
-
-
 @consulta_bp.route('/api/v1/companies/consumerinvoices/<consumer_invoice_id>/items', methods=['GET','POST'])
 def consultar_produtos_id_nf(consumer_invoice_id: str) -> Response:
     consumer_invoice_id = request.get_json()
     values = consumer_invoice_id['consumer_invoice_id']
     return jsonify({"Notas":values})
-
-
 @consulta_bp.route('/api/v1/companies/consumerinvoices/<consumer_invoice_id>/events', methods=['GET','POST'])
 def consultar_eventos_nf_id(consumer_invoice_id: str) -> Response:
     consumer_invoice_id = request.get_json()
     values = consumer_invoice_id['consumer_invoice_id']
     return jsonify({"Notas":values})
-
-
 @consulta_bp.route('/api/v1/companies/consumerinvoices/<consumer_invoice_id>/xml', methods=['GET','POST'])
 def consultar_xml_nf(consumer_invoice_id: str) -> Response:
     consumer_invoice_id = request.get_json()
     values = consumer_invoice_id['consumer_invoice_id']
     print(consumer_invoice_id)
     return jsonify({"Notas":values})
-
-
 @consulta_bp.route('/api/v1/companies/consumerinvoices/<consumer_invoice_id>/rejeicao/xml', methods=['GET','POST'])
 def consultar_xml_rejeicao_id(consumer_invoice_id: str) -> Response:
     consumer_invoice_id = request.get_json()
