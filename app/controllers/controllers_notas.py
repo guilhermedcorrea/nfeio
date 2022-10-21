@@ -65,12 +65,12 @@ def emissao_nfe(f) -> Any:
 
         payload = json.dumps({
         "buyer": {
-            "name": "Teste NF TESTE","tradeName": "Comprador Nome Comercial","address": {"city": {"code": "1751488","name": "Marilia"
-            },"state": "SP","district": "distrito","street": "Alameda Madri","postalCode": "1751488","number": "555","country": "BRA"},
+            "name": "Teste NF TESTE","tradeName": "Comprador Nome Comercial","address": {"city": {"code": "{}","name": "{}"
+            },"state": "SP","district": "distrito","street": "{}","postalCode": "{}","number": "555","country": "BRA"},
             "federalTaxNumber": 99999999999999
         },
-        "items": [{"code": "20968A","unitAmount": 87.9,"quantity": 33.9,"cfop": 5102, "ncm": "69072100","codeGTIN": "7894287914364",
-            "codeTaxGTIN": "7894287914364","tax": {"totalTax": 6,"icms": {"csosn": "102","origin": "0"},"pis": { "amount": 0,"rate": 0,"baseTax": 208,          "cst": "08"
+        "items": [{"code": "{}","unitAmount": 87.9,"quantity": {},"cfop": 5102, "ncm": "{}","codeGTIN": "{}",
+            "codeTaxGTIN": "7894287914364","tax": {"totalTax": {},"icms": {"csosn": "102","origin": "0"},"pis": { "amount": 0,"rate": 0,"baseTax": 208,          "cst": "08"
                 },"cofins": {"amount": 0,"rate": 0,"baseTax": 208,"cst": "08"}},"cest": "","description": "TESTE DE PRODUTO - WITMOB"
             }]})
         headers = {
