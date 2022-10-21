@@ -51,13 +51,21 @@ def emissao_nfe(f) -> Any:
     def emissao_notas_fiscais(*args: tuple, **kwargs: Dict[str, Any]) -> Any:
         for listas in args:
             for items in listas:
+                ValorTotal = converte_float(items.get('ValorTotal'))
+                QtdCaixa = converte_float(items.get('QtdCaixa'))
+                PrecoUnitario = converte_float(items.get('PrecoUnitario'))
+                Quantidade = converte_float(items.get('Quantidade'))
+                Desconto = converte_float(items.get('Desconto'))
+                DescontoItem = converte_float(items.get('DescontoItem'))
+
+                print('valor total -->',ValorTotal)
                 print(items.get('CodigoPedido'), items.get('IdCliente'),items.get('NomeCliente')
-                ,items.get('SKU'),items.get('QtdCaixa'),items.get('PrecoUnitario'), items.get('Quantidade')
+                ,items.get('SKU'),QtdCaixa,PrecoUnitario, Quantidade
                 ,items.get('EAN'), items.get('NCM'),items.get('Marca'), items.get('NomeProduto'),items.get('NomeCliente')
-                ,items.get('CpfCnpj'),items.get('ValorTotal'),items.get('Unidade')
+                ,items.get('CpfCnpj'),ValorTotal,items.get('Unidade')
                 ,items.get('RazaoSocialFranquiaVenda'),items.get('Bairro'),items.get('Celular')
                 ,items.get('Cep'),items.get('Complemento'),items.get('Endereco')
-                ,items.get('Desconto'), items.get('DescontoItem'),items.get('Nome'),items.get('Uf'))
+                ,Desconto, DescontoItem,items.get('Nome'),items.get('Uf'))
                         
         print('emissao notas fiscais ')
         '''
