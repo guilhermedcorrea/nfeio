@@ -65,13 +65,13 @@ def emissao_nfe(f) -> Any:
 
         payload = json.dumps({
         "buyer": {
-            "name": "Teste NF TESTE","tradeName": "Comprador Nome Comercial","address": {"city": {"code": "{}","name": "{}"
-            },"state": "SP","district": "distrito","street": "{}","postalCode": "{}","number": "555","country": "BRA"},
-            "federalTaxNumber": 99999999999999
+            "name": "Teste NF TESTE","tradeName": "{}","address": {"city": {"code": "{}","name": "{}"
+            },"state": "{}","district": "distrito","street": "{}","postalCode": "{}","number": "{}","country": "{}"},
+            "federalTaxNumber": {}
         },
-        "items": [{"code": "{}","unitAmount": 87.9,"quantity": {},"cfop": 5102, "ncm": "{}","codeGTIN": "{}",
-            "codeTaxGTIN": "7894287914364","tax": {"totalTax": {},"icms": {"csosn": "102","origin": "0"},"pis": { "amount": 0,"rate": 0,"baseTax": 208,          "cst": "08"
-                },"cofins": {"amount": 0,"rate": 0,"baseTax": 208,"cst": "08"}},"cest": "","description": "TESTE DE PRODUTO - WITMOB"
+        "items": [{"code": "{}","unitAmount": {},"quantity": {},"cfop": {}, "ncm": "{}","codeGTIN": "{}",
+            "codeTaxGTIN": "{}","tax": {"totalTax": {},"icms": {"csosn": "{}","origin": "{}"},"pis": { "amount": 0,"rate": 0,"baseTax": {},"cst": "{}"
+                },"cofins": {"amount": 0,"rate": 0,"baseTax": {},"cst": "{}"}},"cest": "{}","description": "{}"
             }]})
         headers = {
         'Authorization': f'{API_KEY_EMISSAO}',
