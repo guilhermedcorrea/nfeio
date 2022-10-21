@@ -46,5 +46,6 @@ params = urllib.parse.quote_plus("DRIVER={SQL Server Native Client 11.0};"
 SECRET_KEY = '5791628bb0b13ce0c676dfde280ba245'
 
 
+
 SQLALCHEMY_DATABASE_URI= ("mssql+pyodbc:///?odbc_connect=%s" % params)
 
