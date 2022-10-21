@@ -96,22 +96,30 @@ def consultar_nf_id(consumer_invoice_id: str) -> Response:
     values = consumer_invoice_id['consumer_invoice_id']
     print(values)
     return jsonify({"Notas":values})
+
+
 @consulta_bp.route('/api/v1/companies/consumerinvoices/<consumer_invoice_id>/items', methods=['GET','POST'])
 def consultar_produtos_id_nf(consumer_invoice_id: str) -> Response:
     consumer_invoice_id = request.get_json()
     values = consumer_invoice_id['consumer_invoice_id']
     return jsonify({"Notas":values})
+
+
 @consulta_bp.route('/api/v1/companies/consumerinvoices/<consumer_invoice_id>/events', methods=['GET','POST'])
 def consultar_eventos_nf_id(consumer_invoice_id: str) -> Response:
     consumer_invoice_id = request.get_json()
     values = consumer_invoice_id['consumer_invoice_id']
     return jsonify({"Notas":values})
+
+
 @consulta_bp.route('/api/v1/companies/consumerinvoices/<consumer_invoice_id>/xml', methods=['GET','POST'])
 def consultar_xml_nf(consumer_invoice_id: str) -> Response:
     consumer_invoice_id = request.get_json()
     values = consumer_invoice_id['consumer_invoice_id']
     print(consumer_invoice_id)
     return jsonify({"Notas":values})
+
+
 @consulta_bp.route('/api/v1/companies/consumerinvoices/<consumer_invoice_id>/rejeicao/xml', methods=['GET','POST'])
 def consultar_xml_rejeicao_id(consumer_invoice_id: str) -> Response:
     consumer_invoice_id = request.get_json()
