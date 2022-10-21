@@ -32,6 +32,7 @@ TEMPLATE_FOLDER = os.path.abspath(os.path.dirname(__file__))
 
 
 paramsdev = urllib.parse.quote_plus("DRIVER={SQL Server Native Client 11.0};"
+<<<<<<< HEAD
                                  "SERVER={server};"
                                  "DATABASE={database};"
                                  "UID={usuario};"
@@ -42,6 +43,18 @@ params = urllib.parse.quote_plus("DRIVER={SQL Server Native Client 11.0};"
                                  "DATABASE={database};"
                                  "UID={usuario};"
                                  "PWD={password}")
+=======
+                                 "SERVER=;"
+                                 "DATABASE=;"
+                                 "UID=;"
+                                 "PWD=")
+
+params = urllib.parse.quote_plus("DRIVER={SQL Server Native Client 11.0};"
+                                 "SERVER=;"
+                                 "DATABASE=;"
+                                 "UID=;"
+                                 "PWD=")
+>>>>>>> 59aff84be2d8a33a0e2376462febb3de1e79bf6c
 
 SECRET_KEY = '5791628bb0b13ce0c676dfde280ba245'
 
