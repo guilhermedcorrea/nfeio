@@ -4,9 +4,12 @@ from flask import (Blueprint, Request, jsonify
 from flask_marshmallow import Marshmallow
 from sqlalchemy import text
 from itertools import chain
-from ..controllers.controllers_hausz import PedidosComprasHausz
+from ..controllers.controllers_hausz_mapa import executa_select
+from ..controllers.controllers_notas import emissao_nfe
 import os
 from dotenv import load_dotenv
+import json
+from typing import Dict, Tuple, List, Any
 
 
 def register_handlers(app):
@@ -45,26 +48,34 @@ load_dotenv()
 API_KEY_EMISSAO = os.getenv('API_KEY_EMISSAO')
 COMPANY_ID_EMISSAO = os.getenv('COMPANY_ID_EMISSAO')
 
-
 """
 Emissao notas ficais
 https://nfe.io/docs/desenvolvedores/rest-api/nota-fiscal-de-produto-v2/#/
 """
 
-
+@emissao_nfe
+def notas_fiscais(*args: tuple, **kwargs: Dict[str, Any]) -> None:
+    """Docstring"""
+    print('Called function')
 
 @cadastro_bp.route("/api/v1/companies/emissao/", methods=['GET','POST'])
 def cadastra_notas() -> Response:
-    try:
-        valores = request.get_json()
-        print(valores)
-        #pedidos = get_pedidos_flexy()
-        #pedido = [x for x in next(pedidos)]
-        return jsonify({"nf":'emissao'}), 201
-    except:
-        abort(400)
+    dados_pedido = executa_select()
+    for pedidos in dados_pedido:
+        for pedido in pedidos:
 
-    
+            """Metodo recebe parametros pedido e emite NF"""
+           
+            emissao_nf = notas_fiscais(pedido.get('CodigoPedido'), pedido.get('EAN'), pedido.get('NCM'), pedido.get('CEST')
+                , pedido.get('SKU'), pedido.get('Quantidade'), pedido.get('PrecoUnitario'), pedido.get('IPI')
+                , pedido.get('nomecidadecliente'), pedido.get('nomestadocliente'), pedido.get('Endereco'), pedido.get('Complemento')
+                , pedido.get('Cep'), pedido.get('Numero'))
+
+            if emissao_nf:
+                return jsonify({"NFE":"EMITIDA"}), 201
+           
+    return "teste"
+
 @cadastro_bp.route("/api/v1/companies/cancelamento/", methods=['GET','POST'])
 def cancela_nota() -> Response:
     id_nf  = request.get_json()
@@ -73,3 +84,11 @@ def cancela_nota() -> Response:
     except:
         abort(400)
 
+
+@cadastro_bp.route("/api/v1/companies/cartacorrecao/", methods=['GET','POST'])
+def carta_correcao() -> Response:
+    id_nf  = request.get_json()
+    try:
+        return jsonify({"CANCELANF":id_nf}),201
+    except:
+        abort(400)

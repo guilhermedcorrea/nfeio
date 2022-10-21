@@ -2,6 +2,8 @@ from ..extensions import db
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import DateTime
 
+
+#Tabela Pedidos de venda
 class PedidoFlexy(db.Model):
     __tablename__ = "PedidoFlexy"
     __bind_key__ = 'HauszMapa'
