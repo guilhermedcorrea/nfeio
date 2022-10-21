@@ -65,31 +65,31 @@ def emissao_nfe(f) -> Any:
                 ,items.get('CpfCnpj'),ValorTotal,items.get('Unidade')
                 ,items.get('RazaoSocialFranquiaVenda'),items.get('Bairro'),items.get('Celular')
                 ,items.get('Cep'),items.get('Complemento'),items.get('Endereco')
-                ,Desconto, DescontoItem,items.get('Nome'),items.get('Uf'))
-                        
+                ,Desconto, DescontoItem,items.get('Nome'),items.get('Uf'),items.get('Numero'))
+                    
         print('emissao notas fiscais ')
-        '''
-        url = """https://api.nfse.io/v2/companies/{COMPANY_ID_EMISSAO}/productinvoices/""".format(COMPANY_ID_EMISSAO)
+     
+        url = """https://api.nfse.io/v2/companies/{}/productinvoices/""".format(kwargs.get('COMPANY_ID_EMISSAO'))
 
         payload = json.dumps({
         "buyer": {
-            "name": "Teste NF TESTE","tradeName": "{}","address": {"city": {"code": "{}","name": "{}"
-            },"state": "{}","district": "distrito","street": "{}","postalCode": "{}","number": "{}","country": "{}"},
-            "federalTaxNumber": {}
+            "name": f"{items.get('NomeCliente')}","tradeName": f"{items.get('NomeCliente')}","address": {"city": {"code": f"{items.get('Cep')}","name": f"{items.get('Nome')}"
+            },"state": f"{items.get('Uf')}","district": "distrito","street": f"{items.get('Endereco')}","postalCode": f"{items.get('Cep')}","number": f"{items.get('Numero')}","country": "BRA"},
+            "federalTaxNumber": 99999999999999
         },
-        "items": [{"code": "{}","unitAmount": {},"quantity": {},"cfop": {}, "ncm": "{}","codeGTIN": "{}",
-            "codeTaxGTIN": "{}","tax": {"totalTax": {},"icms": {"csosn": "{}","origin": "{}"},"pis": { "amount": 0,"rate": 0,"baseTax": {},"cst": "{}"
-                },"cofins": {"amount": 0,"rate": 0,"baseTax": {},"cst": "{}"}},"cest": "{}","description": "{}"
+        "items": [{"code": f"{items.get('SKU')}","unitAmount": 87.9,"quantity": f"{Quantidade}","cfop": 5102, "ncm": f"{items.get('NCM')}","codeGTIN": f"{items.get('EAN')}",
+            "codeTaxGTIN": f"{items.get('EAN')}","tax": {"totalTax": 6,"icms": {"csosn": "102","origin": "0"},"pis": { "amount": 0,"rate": 0,"baseTax": 208,          "cst": "08"
+                },"cofins": {"amount": 0,"rate": 0,"baseTax": 208,"cst": "08"}},"cest": "","description": f"{items.get('NomeCliente')}"
             }]})
         headers = {
-        'Authorization': f'{API_KEY_EMISSAO}',
+        'Authorization': f"{kwargs.get('API_KEY_EMISSAO')}",
         'Content-Type': 'application/json'
         }
 
         response = requests.request("POST", url, headers=headers, data=payload)
 
         print(response.status_code)
-        '''
+      
         #return response.json()
         return 'teste'
         
