@@ -51,13 +51,15 @@ def emissao_nfe(f) -> Any:
     def emissao_notas_fiscais(*args: tuple, **kwargs: Dict[str, Any]) -> Any:
         for listas in args:
             for items in listas:
-                ValorTotal = converte_float(items.get('ValorTotal'))
-                QtdCaixa = converte_float(items.get('QtdCaixa'))
-                PrecoUnitario = converte_float(items.get('PrecoUnitario'))
-                Quantidade = converte_float(items.get('Quantidade'))
-                Desconto = converte_float(items.get('Desconto'))
-                DescontoItem = converte_float(items.get('DescontoItem'))
-
+                try:
+                    ValorTotal = converte_float(items.get('ValorTotal'))
+                    QtdCaixa = converte_float(items.get('QtdCaixa'))
+                    PrecoUnitario = converte_float(items.get('PrecoUnitario'))
+                    Quantidade = converte_float(items.get('Quantidade'))
+                    Desconto = converte_float(items.get('Desconto'))
+                    DescontoItem = converte_float(items.get('DescontoItem'))
+                except Exception as e:
+                    print(e)
                 print('valor total -->',ValorTotal)
                 print(items.get('CodigoPedido'), items.get('IdCliente'),items.get('NomeCliente')
                 ,items.get('SKU'),QtdCaixa,PrecoUnitario, Quantidade
@@ -70,25 +72,29 @@ def emissao_nfe(f) -> Any:
         print('emissao notas fiscais ')
      
         url = """https://api.nfse.io/v2/companies/{}/productinvoices/""".format(kwargs.get('COMPANY_ID_EMISSAO'))
+        try:
+            payload = json.dumps({
+            "buyer": {
+                "name": f"{items.get('NomeCliente')}","tradeName": f"{items.get('NomeCliente')}","address": {"city": {"code": f"{items.get('Cep')}","name": f"{items.get('Nome')}"
+                },"state": f"{items.get('Uf')}","district": "distrito","street": f"{items.get('Endereco')}","postalCode": f"{items.get('Cep')}","number": f"{items.get('Numero')}","country": "BRA"},
+                "federalTaxNumber": 99999999999999
+            },
+            "items": [{"code": f"{items.get('SKU')}","unitAmount": 87.9,"quantity": f"{Quantidade}","cfop": 5102, "ncm": f"{items.get('NCM')}","codeGTIN": f"{items.get('EAN')}",
+                "codeTaxGTIN": f"{items.get('EAN')}","tax": {"totalTax": 6,"icms": {"csosn": "102","origin": "0"},"pis": { "amount": 0,"rate": 0,"baseTax": 208,          "cst": "08"
+                    },"cofins": {"amount": 0,"rate": 0,"baseTax": 208,"cst": "08"}},"cest": "","description": f"{items.get('NomeCliente')}"
+                }]})
+            headers = {
+            'Authorization': f"{kwargs.get('API_KEY_EMISSAO')}",
+            'Content-Type': 'application/json'
+            }
 
-        payload = json.dumps({
-        "buyer": {
-            "name": f"{items.get('NomeCliente')}","tradeName": f"{items.get('NomeCliente')}","address": {"city": {"code": f"{items.get('Cep')}","name": f"{items.get('Nome')}"
-            },"state": f"{items.get('Uf')}","district": "distrito","street": f"{items.get('Endereco')}","postalCode": f"{items.get('Cep')}","number": f"{items.get('Numero')}","country": "BRA"},
-            "federalTaxNumber": 99999999999999
-        },
-        "items": [{"code": f"{items.get('SKU')}","unitAmount": 87.9,"quantity": f"{Quantidade}","cfop": 5102, "ncm": f"{items.get('NCM')}","codeGTIN": f"{items.get('EAN')}",
-            "codeTaxGTIN": f"{items.get('EAN')}","tax": {"totalTax": 6,"icms": {"csosn": "102","origin": "0"},"pis": { "amount": 0,"rate": 0,"baseTax": 208,          "cst": "08"
-                },"cofins": {"amount": 0,"rate": 0,"baseTax": 208,"cst": "08"}},"cest": "","description": f"{items.get('NomeCliente')}"
-            }]})
-        headers = {
-        'Authorization': f"{kwargs.get('API_KEY_EMISSAO')}",
-        'Content-Type': 'application/json'
-        }
+            response = requests.request("POST", url, headers=headers, data=payload)
+            print(response.status_code)
+            print(f"Nota Emitida {items.get('CodigoPedido')}")
+        except Exception as e:
+            print(f"Nota nao Emitida {items.get('CodigoPedido')}",e)
 
-        response = requests.request("POST", url, headers=headers, data=payload)
-
-        print(response.status_code)
+        
       
         #return response.json()
         return 'teste'
