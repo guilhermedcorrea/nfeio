@@ -1,4 +1,3 @@
-
 from flask import (Blueprint, Request, jsonify
     , make_response, Response, redirect, current_app, request,abort)
 from flask_marshmallow import Marshmallow
@@ -12,6 +11,7 @@ from typing import Dict, Tuple, List, Literal, Any
 from ..controllers.controllers_hausz_mapa import executa_select
 from ..extensions import db
 from itertools import groupby
+
 
 
 def register_handlers(app):
@@ -55,15 +55,14 @@ Emissao notas ficais
 https://nfe.io/docs/desenvolvedores/rest-api/nota-fiscal-de-produto-v2/#/
 """
 
+
 @emissao_nfe
-def notas_fiscais(*args: tuple, **kwargs: Dict[str, Any]) -> None:
-    """Docstring"""
-    print('Called function')
+def emissao_nf(*args: tuple, **kwargs: dict[str, Any]) -> dict[str, Any]:
+    print(args, kwargs)
 
 
 def group_keys(key) -> Any:
     return key['CodigoPedido']
-
 
 #convert(date,getdate()
 #teste funcao
@@ -72,15 +71,15 @@ def verifica_dict(dict_items) -> (dict | Literal['erro'] | None):
     match dict_items:
         case dict_items if len(dict_items) >1:
             for items in dict_items:
-                return {items.get('CodigoPedido'):items}
+                return items
         case dict_items if len(dict_items) ==1:
             for items in dict_items:
-                return {items.get('CodigoPedido'):items}
+                return items
         case _:
             return "erro"
 
 
-@cadastro_bp.route("/api/v1/companies/emissao/", methods=['GET','POST'])
+@cadastro_bp.route("/api/v2/companies/emissao/", methods=['GET','POST'])
 def cadastra_notas() -> Response:
     lista_pedidos: list[dict[str, str]] = []
     with db.engine.connect() as conn:
@@ -88,6 +87,10 @@ def cadastra_notas() -> Response:
             SELECT DISTINCT *FROM [HauszMapa].[Pedidos].[PedidoFlexy] AS PFLEXY
             JOIN [HauszMapa].[Pedidos].[EnderecoPedidos]AS EPEDIDO
             ON EPEDIDO.Idcliente = PFLEXY.IdCliente
+            JOIN [HauszMapa].[Cadastro].[Cidade] as ccidade
+            ON ccidade.IdCidade = EPEDIDO.IdCidade
+            JOIN [HauszMapa].[Cadastro].[Estado] as cestado
+            ON cestado.IdEstado = ccidade.IdEstado
             WHERE convert(date,PFLEXY.[DataInserido])  =  '2022-10-18'
             AND PFLEXY.StatusPedido ='Em separação'"""))
         teste = conn.execute(query).all()
@@ -99,15 +102,33 @@ def cadastra_notas() -> Response:
             dict_items = next(chain(jsons))
             #print(dict_items)
             dict_items = sorted(dict_items, key=group_keys)
-        
             for key, value in groupby(dict_items, group_keys):
                 #cont = len(list(value))
                 dicts = verifica_dict(list(value))
+                dicts.update(pedidos)
                 lista_pedidos.append(dicts)
+    
+    emissao_nf(lista_pedidos,API_KEY_EMISSAO,COMPANY_ID_EMISSAO)
+    return make_response(jsonify({'EmitindoNFE':lista_pedidos})),201
 
-    return make_response(jsonify(lista_pedidos))
+@cadastro_bp.route("/api/v2/companies/emissao/<pedido>", methods=['GET','POST'])
+def cadastra_nota_referencia(pedido):
 
-@cadastro_bp.route("/api/v1/companies/cancelamento/", methods=['GET','POST'])
+    jsons = executa_select(pedido = int(pedido))
+    dict_items = next(chain(jsons))
+          
+    #dict_items = sorted(dict_items, key=group_keys)
+    #for key, value in groupby(dict_items, group_keys):
+
+    #    dicts = verifica_dict(next(value))
+        #pedido_nf = emissao_nf(dicts,API_KEY_EMISSAO,COMPANY_ID_EMISSAO)
+    print(dict_items)
+    pedido_nf = emissao_nf(dict_items,API_KEY_EMISSAO,COMPANY_ID_EMISSAO)
+    return make_response(jsonify(dict_items)),201
+   
+
+
+@cadastro_bp.route("/api/v2/companies/cancelamento/", methods=['GET','POST'])
 def cancela_nota() -> Response:
     id_nf  = request.get_json()
     try:
@@ -115,7 +136,7 @@ def cancela_nota() -> Response:
     except:
         abort(400)
 
-@cadastro_bp.route("/api/v1/companies/cartacorrecao/", methods=['GET','POST'])
+@cadastro_bp.route("/api/v2/companies/cartacorrecao/", methods=['GET','POST'])
 def carta_correcao() -> Response:
     id_nf  = request.get_json()
     try:
